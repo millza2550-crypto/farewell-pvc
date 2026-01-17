@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เว็บอำลา ปวช | ความทรงจำอบอุ่น</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+      margin:0;
+      font-family:'Segoe UI',Tahoma,sans-serif;
+      background:linear-gradient(135deg,#ffe6f0,#e6f7ff);
+    }
+    header{
+      background:linear-gradient(90deg,#ff9a9e,#fad0c4);
+      padding:40px 20px;
+      text-align:center;
+      color:#fff;
+    }
+    header h1{margin:0;font-size:2.6rem;}
+    header p{margin-top:10px;font-size:1.1rem;}
+    nav{
+      background:#ffffffcc;
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      padding:12px;
+      position:sticky;
+      top:0;
+      backdrop-filter:blur(8px);
+    }
+    nav a{
+      text-decoration:none;
+      color:#ff5e9c;
+      font-weight:600;
+    }
+    .container{max-width:1000px;margin:30px auto;padding:0 15px;}
+    .card{
+      background:#fff;
+      border-radius:20px;
+      padding:25px;
+      margin-bottom:25px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    }
+    h2{color:#ff5e9c;margin-top:0;}
+    input,textarea{
+      width:100%;
+      padding:12px;
+      margin-top:8px;
+      margin-bottom:15px;
+      border-radius:12px;
+      border:1px solid #ccc;
+      font-size:1rem;
+    }
+    button{
+      background:linear-gradient(90deg,#ff9a9e,#fad0c4);
+      border:none;
+      color:#fff;
+      padding:12px 30px;
+      border-radius:25px;
+      font-size:1rem;
+      cursor:pointer;
+    }
+    button:hover{opacity:0.9;}
+    .post{margin-bottom:15px;}
+    .author{font-size:0.9rem;color:#777;margin-bottom:8px;}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px;}
+    .gallery img{width:100%;border-radius:15px;object-fit:cover;}
+    footer{text-align:center;padding:25px;color:#666;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 เว็บอำลา ปวช</h1>
+  <p>ความทรงจำอบอุ่น ที่จะอยู่ตลอดไป 💖</p>
+</header>
+
+<nav>
+  <a href="#friends">💌 ข้อความเพื่อน</a>
+  <a href="#gallery">📸 ความทรงจำ</a>
+  <a href="#teachers">🌸 ขอบคุณครู</a>
+</nav>
+
+<div class="container">
+
+<!-- ===== ข้อความเพื่อน ===== -->
+<section id="friends" class="card">
+  <h2>💌 เขียนข้อความถึงเพื่อน ๆ</h2>
+  <input id="name" placeholder="ชื่อของคุณ">
+  <textarea id="text" rows="4" placeholder="พิมพ์ข้อความจากใจ..."></textarea>
+  <button onclick="saveMessage()">บันทึกข้อความ</button>
+  <div id="messages"></div>
+</section>
+
+<!-- ===== แกลเลอรี ===== -->
+<section id="gallery" class="card">
+  <h2>📸 รูปเพื่อน / ห้อง / กิจกรรม</h2>
+  <input type="file" accept="image/*" onchange="addImage(event)">
+  <div class="gallery" id="galleryBox"></div>
+</section>
+
+<!-- ===== ขอบคุณครู ===== -->
+<section id="teachers" class="card">
+  <h2>🌸 ขอบคุณคุณครู</h2>
+  <p>
+    ขอบคุณคุณครูทุกท่าน ที่ให้ความรู้ ความเมตตา และคำสอน
+    พวกเราจะจดจำและนำไปใช้ตลอดชีวิต 🤍
+  </p>
+</section>
+
+</div>
+
+<footer>
+  ทำด้วย ❤ เพื่อเพื่อน ๆ และคุณครู
+</footer>
+
+<script>
+/* ===== ข้อความเพื่อน (ถาวรด้วย LocalStorage) ===== */
+let messages = JSON.parse(localStorage.getItem('messages')||'[]');
+function renderMessages(){
+  const box=document.getElementById('messages');
+  box.innerHTML='';
+  messages.forEach(m=>{
+    box.innerHTML+=`<div class="post"><div class="author">โดย: ${m.name}</div><p>${m.text}</p></div>`;
+  });
+}
+function saveMessage(){
+  const name=document.getElementById('name').value;
+  const text=document.getElementById('text').value;
+  if(!name||!text){alert('กรอกให้ครบก่อนนะ 😊');return;}
+  messages.unshift({name,text});
+  localStorage.setItem('messages',JSON.stringify(messages));
+  document.getElementById('name').value='';
+  document.getElementById('text').value='';
+  renderMessages();
+}
+renderMessages();
+
+/* ===== รูปภาพ (ถาวร) ===== */
+let images = JSON.parse(localStorage.getItem('images')||'[]');
+function renderImages(){
+  const g=document.getElementById('galleryBox');
+  g.innerHTML='';
+  images.forEach(src=>{g.innerHTML+=`<img src="${src}">`;});
+}
+function addImage(e){
+  const file=e.target.files[0];
+  const reader=new FileReader();
+  reader.onload=()=>{
+    images.unshift(reader.result);
+    localStorage.setItem('images',JSON.stringify(images));
+    renderImages();
+  };
+  reader.readAsDataURL(file);
+}
+renderImages();
+</script>
+
+</body>
+</html>
